@@ -5,19 +5,18 @@
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewProfile"
+        android:id="@+id/card_view_profile"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="60dp"
         app:cardCornerRadius="75dp"
         app:cardElevation="4dp"
-        android:backgroundTint="@color/md_theme_light_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageViewProfile"
+            android:id="@+id/iv_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
@@ -26,27 +25,7 @@
     </androidx.cardview.widget.CardView>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_back_home"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:padding="4dp"
-        android:textColor="@android:color/white"
-        app:backgroundTint="@color/md_theme_light_primary"
-        app:cornerRadius="12dp"
-        app:icon="@drawable/ic_left_arrow_white"
-        app:iconGravity="start"
-        app:iconSize="28dp"
-        app:iconTint="@android:color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:rippleColor="@color/md_theme_light_primary" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_change_list_mode"
+        android:id="@+id/btn_edit_profile"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -69,7 +48,7 @@
         android:text="Username"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardViewProfile" />
+        app:layout_constraintTop_toBottomOf="@id/card_view_profile" />
 
 
     <androidx.cardview.widget.CardView
@@ -87,11 +66,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewUsernameLabel">
 
-        <EditText
-            android:id="@+id/editTextUsername"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/username_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Raihan Rafi Rizqullah"
+            android:text="Raihan Rafi"
             android:padding="10dp"
             android:textColor="@color/md_theme_light_onPrimary" />
 
@@ -124,8 +103,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewEmailLabel">
 
-        <EditText
-            android:id="@+id/editTextEmail"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="raihanrrizqullah@gmail.com"
@@ -161,8 +140,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewPhoneLabel">
 
-        <EditText
-            android:id="@+id/editTextPhone"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/phone_edit_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="0895397833055"
