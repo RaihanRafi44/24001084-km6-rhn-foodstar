@@ -1,44 +1,17 @@
 package com.raihan.foodstar.presentation.detailmenu
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.raihan.foodstar.R
 import com.raihan.foodstar.data.model.Menu
 import com.raihan.foodstar.databinding.ActivityDetailMenuBinding
 import com.raihan.foodstar.utils.GenericViewModelFactory
 import com.raihan.foodstar.utils.toIndonesianFormat
 
-/*
-class DetailMenuActivity : AppCompatActivity() {
-
-    private val binding : ActivityDetailMenuBinding by lazy {
-        ActivityDetailMenuBinding.inflate(layoutInflater)
-    }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-    }
-    companion object {
-        const val EXTRA_MENU = "EXTRA_MENU"
-        fun startActivity(context: Context, menu: Menu) {
-            val intent = Intent(context, DetailMenuActivity::class.java)
-            intent.putExtra(EXTRA_MENU, menu)
-            context.startActivity(intent)
-        }
-    }
-
-}*/
 
 class DetailMenuActivity : AppCompatActivity() {
     private val binding: ActivityDetailMenuBinding by lazy {
@@ -50,6 +23,7 @@ class DetailMenuActivity : AppCompatActivity() {
         )
     }
 
+    private var location = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +43,9 @@ class DetailMenuActivity : AppCompatActivity() {
         binding.icAdd.setOnClickListener {
             viewModel.add()
         }
+        binding.layoutDetail.tvAddress.setOnClickListener {
+            navigateToGoogleMaps()
+        }
     }
 
     private fun bindMenu(menu: Menu?) {
@@ -79,6 +56,7 @@ class DetailMenuActivity : AppCompatActivity() {
             binding.layoutDetail.tvCatalogName.text = item.name
             binding.layoutDetail.tvFoodDesc.text = item.desc
             binding.layoutDetail.tvCatalogPrice.text = item.price.toIndonesianFormat()
+            location = item.addressUrl
         }
     }
 
@@ -89,6 +67,13 @@ class DetailMenuActivity : AppCompatActivity() {
         viewModel.menuCountLiveData.observe(this) {
             binding.tvQuantityText.text = it.toString()
         }
+    }
+
+    private fun navigateToGoogleMaps() {
+
+        val mapsURL = Uri.parse(location)
+        val mapIntent = Intent(Intent.ACTION_VIEW, mapsURL)
+        startActivity(mapIntent)
     }
 
     companion object {
