@@ -1,8 +1,25 @@
 <resources>
     <string name="app_name">FoodStar</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_tab_home">Home</string>
     <string name="title_tab_cart">Cart</string>
     <string name="title_tab_profile">Profile</string>
+    <string name="text_add_item">Tambah</string>
+    <string name="text_discount_40">Diskon 40% OFF</string>
+    <string name="text_discount_40_promo">Promo diskon hanya berlaku tanggal 10 - 24 April 2024</string>
+    <string name="text_user_name">Hai Raihan</string>
+    <string name="text_welcome_app">Selamat Datang di Cuisine Star</string>
+    <string name="text_category_title">Kategori</string>
+    <string name="text_catalog_title">List Menu</string>
+    <string name="rupiah">%s Rupiah</string>
+    <string name="add_to_cart">Tambah ke Keranjang - %s</string>
+    <string name="location_title_default">Lokasi</string>
+    <string name="address_location">Jl. BSD Green Office Park Jl. BSD Grand Boulevard, Sampora, BSD, Kabupaten Tangerang, Banten 15345</string>
+    <string name="add_to_cart_text">Tambah</string>
+    <string name="symbol_minus">-</string>
+    <string name="number_count">1</string>
+    <string name="symbol_plus">+</string>
+    <string name="text_catalog_name">Nasi Goreng</string>
+    <string name="text_price_number">18000.0</string>
+    <string name="text_food_desc">Nasi Goreng Spesial dengan rasa yang enak dan bergizi</string>
 </resources>
