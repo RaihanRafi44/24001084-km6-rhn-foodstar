@@ -1,0 +1,62 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Card 1 -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_marginBottom="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Gambar -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_catalog_images"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:background="@color/md_theme_light_onPrimary"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@drawable/rounded_all_corners"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!-- Nama Makanan -->
+                <TextView
+                    android:id="@+id/tv_catalog_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="Nasi Goreng Spesial Lombok Ijo" />
+
+                <!-- Harga -->
+                <TextView
+                    android:id="@+id/tv_catalog_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="80.000,0" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Card 2 -->
+    <!-- Letakkan struktur yang sama di sini untuk setiap entri dalam daftar -->
+
+    <!-- Card 3 -->
+    <!-- Letakkan struktur yang sama di sini untuk setiap entri dalam daftar -->
+
+</LinearLayout>
