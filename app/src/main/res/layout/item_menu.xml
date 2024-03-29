@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <!-- Card 1 -->
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,9 +18,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@color/md_theme_dark_onPrimaryContainer">
 
-            <!-- Gambar -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_catalog_images"
                 android:layout_width="90dp"
@@ -34,7 +34,7 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <!-- Nama Makanan -->
+
                 <TextView
                     android:id="@+id/tv_catalog_name"
                     android:layout_width="match_parent"
@@ -43,7 +43,6 @@
                     android:textStyle="bold"
                     tools:text="Nasi Goreng Spesial Lombok Ijo" />
 
-                <!-- Harga -->
                 <TextView
                     android:id="@+id/tv_catalog_price"
                     android:layout_width="match_parent"
@@ -53,10 +52,5 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Card 2 -->
-    <!-- Letakkan struktur yang sama di sini untuk setiap entri dalam daftar -->
-
-    <!-- Card 3 -->
-    <!-- Letakkan struktur yang sama di sini untuk setiap entri dalam daftar -->
 
 </LinearLayout>

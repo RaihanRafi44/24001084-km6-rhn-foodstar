@@ -9,7 +9,11 @@
         android:id="@+id/menu_tab_home"
         android:name="com.raihan.foodstar.presentation.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_menu_tab_home_to_detailMenuActivity"
+            app:destination="@id/detailMenuActivity" />
+    </fragment>
     <fragment
         android:id="@+id/menu_tab_cart"
         android:name="com.raihan.foodstar.presentation.cart.CartFragment"
@@ -20,4 +24,9 @@
         android:name="com.raihan.foodstar.presentation.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <activity
+        android:id="@+id/detailMenuActivity"
+        android:name="com.raihan.foodstar.presentation.detailmenu.DetailMenuActivity"
+        android:label="activity_detail_menu"
+        tools:layout="@layout/activity_detail_menu" />
 </navigation>
