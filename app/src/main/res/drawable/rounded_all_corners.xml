@@ -4,5 +4,5 @@
         android:topRightRadius="24dp"
         android:bottomLeftRadius="24dp"
         android:bottomRightRadius="24dp"/>
-    <solid android:color="@android:color/darker_gray"/>
+    <solid android:color="@color/md_theme_dark_onPrimaryContainer"/>
 </shape>

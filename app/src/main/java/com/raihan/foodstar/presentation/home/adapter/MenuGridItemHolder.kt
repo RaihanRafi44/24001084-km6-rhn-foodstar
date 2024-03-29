@@ -9,9 +9,9 @@ import com.raihan.foodstar.databinding.ItemMenuBinding
 import com.raihan.foodstar.databinding.ItemMenuGridBinding
 import com.raihan.foodstar.utils.toIndonesianFormat
 
-/*class MenuGridItemHolder(
+class MenuGridItemHolder(
     private val binding: ItemMenuGridBinding,
-    private val listener: OnItemClickedListeners<Menu>
+    private val listener: OnItemClickedListener<Menu>
 )    : ViewHolder(binding.root), ViewHolderBinder<Menu> {
     override fun bind(item: Menu) {
         item.let {
@@ -30,7 +30,7 @@ import com.raihan.foodstar.utils.toIndonesianFormat
 
 class MenuListItemHolder (
     private val binding: ItemMenuBinding,
-    private val listener: OnItemClickedListeners<Menu>
+    private val listener: OnItemClickedListener<Menu>
 ) : ViewHolder(binding.root), ViewHolderBinder<Menu> {
     override fun bind(item: Menu) {
         item.let {
@@ -45,5 +45,5 @@ class MenuListItemHolder (
             }
         }
     }
-}*/
+}
 

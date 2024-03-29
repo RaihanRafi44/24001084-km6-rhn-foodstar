@@ -6,13 +6,24 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.raihan.foodstar.base.ViewHolderBinder
 import com.raihan.foodstar.data.model.Menu
 import com.raihan.foodstar.databinding.ItemMenuBinding
 import com.raihan.foodstar.databinding.ItemMenuGridBinding
 import com.raihan.foodstar.utils.toIndonesianFormat
 
-class MenuAdapter(private val itemClick: (Menu) -> Unit):
-    RecyclerView.Adapter<MenuAdapter.ItemMenuViewHolder>() {
+interface OnItemClickedListener<T> {
+    fun onItemClicked(item: T)
+}
+
+class MenuAdapter(
+    private val listMode: Int = MODE_LIST,
+    private val listener: OnItemClickedListener<Menu>,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    companion object {
+        const val MODE_LIST = 0
+        const val MODE_GRID = 1
+    }
 
     private val dataDiffer =
         AsyncListDiffer(
@@ -38,32 +49,33 @@ class MenuAdapter(private val itemClick: (Menu) -> Unit):
         dataDiffer.submitList(data)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemMenuViewHolder {
-        val binding = ItemMenuGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ItemMenuViewHolder(binding, itemClick)
-
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (listMode == MODE_GRID) {
+            MenuGridItemHolder(
+                ItemMenuGridBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
+                listener
+            )
+        } else {
+            MenuListItemHolder(
+                ItemMenuBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
+                listener
+            )
+        }
     }
 
-    override fun onBindViewHolder(holder: ItemMenuViewHolder, position: Int) {
-        holder.bindView(dataDiffer.currentList[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder !is ViewHolderBinder<*>) return
+        (holder as ViewHolderBinder<Menu>).bind(dataDiffer.currentList[position])
     }
 
     override fun getItemCount(): Int = dataDiffer.currentList.size
 
-    class ItemMenuViewHolder(
-        private val binding: ItemMenuGridBinding,
-        val itemClick: (Menu) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bindView(item: Menu) {
-            with(item) {
-                binding.ivCatalogImages.load(item.imgUrl) {
-                    crossfade(true)
-                }
-                binding.tvCatalogName.text = item.name
-                binding.tvCatalogPrice.text = item.price.toIndonesianFormat()
-                itemView.setOnClickListener { itemClick(this) }
-            }
-        }
-    }
 }
