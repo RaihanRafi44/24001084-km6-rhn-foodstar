@@ -5,27 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.raihan.foodstar.base.ViewHolderBinder
 import com.raihan.foodstar.data.model.Menu
 import com.raihan.foodstar.databinding.ItemMenuBinding
 import com.raihan.foodstar.databinding.ItemMenuGridBinding
-import com.raihan.foodstar.utils.toIndonesianFormat
 
 interface OnItemClickedListener<T> {
     fun onItemClicked(item: T)
 }
 
 class MenuAdapter(
-    private val listMode: Int = MODE_LIST,
-    private val listener: OnItemClickedListener<Menu>,
+    private var listMode: Int,
+    private val listener: (Menu) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val MODE_LIST = 0
         const val MODE_GRID = 1
     }
 
-    private val dataDiffer =
+    private var dataDiffer =
         AsyncListDiffer(
             this,
             object : DiffUtil.ItemCallback<Menu>() {
@@ -72,10 +70,14 @@ class MenuAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder !is ViewHolderBinder<*>) return
-        (holder as ViewHolderBinder<Menu>).bind(dataDiffer.currentList[position])
+        when (holder) {
+            is MenuGridItemHolder -> holder.bind(dataDiffer.currentList[position])
+            is MenuListItemHolder -> holder.bind(dataDiffer.currentList[position])
+        }
     }
 
     override fun getItemCount(): Int = dataDiffer.currentList.size
-
+    fun updateListMode(newListMode: Int) {
+        listMode = newListMode
+    }
 }

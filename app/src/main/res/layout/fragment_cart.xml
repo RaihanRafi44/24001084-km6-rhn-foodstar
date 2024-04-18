@@ -44,10 +44,13 @@
     <include
         android:id="@+id/layout_state"
         layout="@layout/layout_content_state"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/ll_bottom_foot"
-        app:layout_constraintTop_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <LinearLayout
         android:id="@+id/ll_bottom_foot"
         android:layout_width="0dp"
@@ -72,19 +75,13 @@
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/tv_total_price_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/text_total_price_title"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-            <TextView
                 android:id="@+id/tv_total_price_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="200000"
                 android:layout_marginTop="8dp"
-                android:textSize="24sp"/>
+                android:textSize="20sp"
+                android:fontFamily="@font/font_outfit_semi_bold"/>
 
         </LinearLayout>
 
