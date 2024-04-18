@@ -2,11 +2,11 @@ package com.raihan.foodstar.presentation.cart
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.raihan.foodstar.R
 import com.raihan.foodstar.data.datasource.cart.CartDataSource
@@ -98,6 +98,7 @@ class CartFragment : Fragment() {
                     binding.rvCart.isVisible = false
                     isCheckoutButtonEnabled = false
                     updateCheckoutButtonState()
+                    binding.btnCheckoutMenu.visibility = View.GONE
                 },
                 doOnSuccess = {
                     binding.layoutState.root.isVisible = false
@@ -111,6 +112,7 @@ class CartFragment : Fragment() {
                         adapter.submitData(carts)
                         binding.tvTotalPriceValue.text = totalPrice.toIndonesianFormat()
                     }
+                    binding.btnCheckoutMenu.visibility = View.VISIBLE
                 },
                 doOnError = {
                     binding.layoutState.root.isVisible = true
@@ -132,6 +134,7 @@ class CartFragment : Fragment() {
                     result.payload?.let { (carts, totalPrice) ->
                         binding.tvTotalPriceValue.text = totalPrice.toIndonesianFormat()
                     }
+                    binding.btnCheckoutMenu.visibility = View.GONE
                 }
             )
         }

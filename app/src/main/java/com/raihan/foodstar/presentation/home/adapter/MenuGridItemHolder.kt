@@ -11,8 +11,8 @@ import com.raihan.foodstar.utils.toIndonesianFormat
 
 class MenuGridItemHolder(
     private val binding: ItemMenuGridBinding,
-    private val listener: OnItemClickedListener<Menu>
-)    : ViewHolder(binding.root), ViewHolderBinder<Menu> {
+    private val listener: (Menu) -> Unit
+) : ViewHolder(binding.root), ViewHolderBinder<Menu> {
     override fun bind(item: Menu) {
         item.let {
             binding.ivCatalogImages.load(it.imgUrl){
@@ -22,7 +22,7 @@ class MenuGridItemHolder(
             binding.tvCatalogName.text = it.name
             binding.tvCatalogPrice.text = it.price.toIndonesianFormat()
             itemView.setOnClickListener{
-                listener.onItemClicked(item)
+                listener(item)
             }
         }
     }
@@ -30,7 +30,7 @@ class MenuGridItemHolder(
 
 class MenuListItemHolder (
     private val binding: ItemMenuBinding,
-    private val listener: OnItemClickedListener<Menu>
+    private val listener: (Menu) -> Unit
 ) : ViewHolder(binding.root), ViewHolderBinder<Menu> {
     override fun bind(item: Menu) {
         item.let {
@@ -41,7 +41,7 @@ class MenuListItemHolder (
             binding.tvCatalogName.text = it.name
             binding.tvCatalogPrice.text = it.price.toIndonesianFormat()
             itemView.setOnClickListener {
-                listener.onItemClicked(item)
+                listener(item)
             }
         }
     }

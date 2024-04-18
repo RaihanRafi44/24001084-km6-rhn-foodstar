@@ -9,7 +9,7 @@ import com.raihan.foodstar.data.source.local.database.entity.CartEntity
 
 @Database(
     entities = [CartEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

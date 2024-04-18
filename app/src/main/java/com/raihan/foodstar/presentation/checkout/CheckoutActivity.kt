@@ -1,6 +1,7 @@
 package com.raihan.foodstar.presentation.checkout
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -46,6 +47,32 @@ class CheckoutActivity : AppCompatActivity() {
         setupList()
         observeData()
         setClickListeners()
+        observeCheckoutResult()
+    }
+
+    private fun observeCheckoutResult() {
+        viewModel.checkoutResult.observe(this) {
+            it.proceedWhen(
+                doOnSuccess = {
+                    binding.layoutState.root.isVisible = false
+                    binding.layoutState.pbLoading.isVisible = false
+                    showSuccessDialog()
+                },
+                doOnError = {
+                    binding.layoutState.root.isVisible = false
+                    binding.layoutState.pbLoading.isVisible = false
+                    Toast.makeText(
+                        this,
+                        getString(R.string.text_checkout_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                },
+                doOnLoading = {
+                    binding.layoutState.root.isVisible = true
+                    binding.layoutState.pbLoading.isVisible = true
+                }
+            )
+        }
     }
 
     private fun setClickListeners() {
@@ -53,7 +80,7 @@ class CheckoutActivity : AppCompatActivity() {
             onBackPressed()
         }
         binding.btnCheckout.setOnClickListener {
-            showSuccessDialog()
+            viewModel.checkout()
         }
     }
 

@@ -1,7 +1,7 @@
 package com.raihan.foodstar.data.datasource.menu
 
-import com.raihan.foodstar.data.model.Menu
+import com.raihan.foodstar.data.source.network.model.menu.MenusResponse
 
 interface MenuDataSource {
-    fun getMenus(): List<Menu>
+    suspend fun getMenuData(categorySlug: String? = null): MenusResponse
 }
