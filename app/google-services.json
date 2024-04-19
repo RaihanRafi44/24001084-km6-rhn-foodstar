@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "526532045387",
+    "project_id": "foodstar-km6",
+    "storage_bucket": "foodstar-km6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526532045387:android:be10f06a1205423bd47bce",
+        "android_client_info": {
+          "package_name": "com.raihan.foodstar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwhE5Y7mBY5zlwh4Rd_X4hZ8El-s2GPpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

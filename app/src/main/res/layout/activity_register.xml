@@ -35,10 +35,10 @@
         app:layout_constraintTop_toBottomOf="@id/layout_form">
 
         <Button
-            android:id="@+id/btn_login"
+            android:id="@+id/btn_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Daftar"
+            android:text="@string/text_register"
             android:textSize="16sp"
             android:textStyle="bold"/>
 
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        android:text="Sudah punya akun? Login disini"
+        android:text="@string/text_already_have_an_account_click_here"
         android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@id/fl_btn_loading_state"
         tools:layout_editor_absoluteX="16dp" />

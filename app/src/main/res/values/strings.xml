@@ -52,4 +52,25 @@
     <string name="text_phone_number">0895397833055</string>
     <string name="text_empty_cart">Keranjang anda kosong</string>
     <string name="text_checkout_error">Checkout gagal</string>
+    <string name="text_password_title">Password</string>
+    <string name="text_confirm_password_title">Confirm Password</string>
+    <string name="hint_name">Your name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="text_log_in">Login</string>
+    <string name="text_not_registered_yet_register_here">Belum daftar akun ? Daftar disini</string>
+    <string name="text_already_have_an_account_click_here">Sudah punya akun ? Login disini</string>
+    <string name="text_error_email_empty">Email should not be empty</string>
+    <string name="text_error_email_invalid">Enter a valid format email</string>
+    <string name="text_error_password_empty">Password should not be empty</string>
+    <string name="text_error_password_less_than_8_char">Password cannot less than 8 character</string>
+    <string name="text_register">Daftar</string>
+    <string name="text_password_does_not_match">Password doesn\'t match</string>
+    <string name="text_error_name_cannot_empty">Name cannot be empty</string>
+    <string name="text_highlight_login_here">Login disini</string>
+    <string name="text_highlight_register">Daftar disini</string>
+    <string name="text_change_profile">Change Profile</string>
+    <string name="text_change_password">Change Password</string>
+    <string name="text_logout">Logout</string>
 </resources>
