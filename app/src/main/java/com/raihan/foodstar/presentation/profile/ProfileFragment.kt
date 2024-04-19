@@ -10,8 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.raihan.foodstar.R
 import com.raihan.foodstar.data.datasource.auth.AuthDataSource
 import com.raihan.foodstar.data.datasource.auth.FirebaseAuthDataSource
@@ -22,7 +20,6 @@ import com.raihan.foodstar.data.source.firebase.FirebaseServiceImpl
 import com.raihan.foodstar.databinding.FragmentProfileBinding
 import com.raihan.foodstar.presentation.main.MainActivity
 import com.raihan.foodstar.utils.GenericViewModelFactory
-import com.raihan.foodstar.utils.hideKeyboard
 import com.raihan.foodstar.utils.proceedWhen
 
 class ProfileFragment : Fragment() {
@@ -55,43 +52,22 @@ class ProfileFragment : Fragment() {
     private fun doEditProfile(){
         if(checkNameValidation()){
             val fullName = binding.layoutProfile.etName.text.toString().trim()
-            val email = binding.layoutProfile.etEmail.text.toString().trim()
-            proceedEdit(fullName, email)
+            proceedEdit(fullName)
         }
     }
-    private fun proceedEdit(fullName: String, email : String) {
+    private fun proceedEdit(fullName: String) {
         viewModel.updateProfileName(fullName = fullName).observe(viewLifecycleOwner) {
             it.proceedWhen(
                 doOnSuccess = {
                     binding.layoutProfile.pbLoading.isVisible = false
                     binding.layoutProfile.btnSaveProfile.isVisible = true
-                    Toast.makeText(requireContext(), "Change Profile data Success !", Toast.LENGTH_SHORT).show()
-                    showUserData()
+                    Toast.makeText(requireContext(), "Pengubahan data profil sukses", Toast.LENGTH_SHORT).show()
+                    binding.layoutProfile.btnSaveProfile.isEnabled = false
                 },
                 doOnError = {
                     binding.layoutProfile.pbLoading.isVisible = false
                     binding.layoutProfile.btnSaveProfile.isVisible = true
-                    Toast.makeText(requireContext(), "Change Profile data Failed !", Toast.LENGTH_SHORT).show()
-
-                },
-                doOnLoading = {
-                    binding.layoutProfile.pbLoading.isVisible = true
-                    binding.layoutProfile.btnSaveProfile.isVisible = false
-                }
-            )
-        }
-        viewModel.updateProfileEmail(email = email).observe(viewLifecycleOwner) {
-            it.proceedWhen(
-                doOnSuccess = {
-                    binding.layoutProfile.pbLoading.isVisible = false
-                    binding.layoutProfile.btnSaveProfile.isVisible = true
-                    Toast.makeText(requireContext(), "Change Profile data Success !", Toast.LENGTH_SHORT).show()
-                    showUserData()
-                },
-                doOnError = {
-                    binding.layoutProfile.pbLoading.isVisible = false
-                    binding.layoutProfile.btnSaveProfile.isVisible = true
-                    Toast.makeText(requireContext(), "Change Profile data Failed !", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Pengubahan data profil gagal", Toast.LENGTH_SHORT).show()
 
                 },
                 doOnLoading = {
@@ -105,14 +81,19 @@ class ProfileFragment : Fragment() {
 
     private fun requestChangePassword() {
         viewModel.createChangePwdRequest()
-        val dialog = AlertDialog.Builder(requireContext())
-            .setMessage("Change password request sended to your email : ${viewModel.getCurrentUser()?.email} Please check to your inbox or spam")
-            .setPositiveButton(
-                "Okay"
-            ) { dialog, id ->
-
-            }.create()
+        val dialog = buildChangePasswordDialog("Reset password akan dikirimkan ke email ${viewModel.getCurrentUser()?.email}. Harap periksa inbox atau folder spam anda.")
         dialog.show()
+    }
+
+    private fun buildChangePasswordDialog(message: String): AlertDialog {
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+        dialogBuilder.setMessage(message)
+        dialogBuilder.setPositiveButton(
+            "Oke"
+        ) { dialog, id ->
+            // Dismiss dialog on button click
+        }
+        return dialogBuilder.create()
     }
 
 
@@ -140,39 +121,52 @@ class ProfileFragment : Fragment() {
             binding.layoutProfile.etName.isEnabled = it
             binding.layoutProfile.etEmail.isEnabled = it
         }
-        doEditProfile()
     }
 
     private fun setClickListener() {
         binding.layoutProfile.btnEditProfile.setOnClickListener {
             viewModel.changeEditMode()
         }
-        binding.layoutProfile.btnLogout.setOnClickListener {
-            doLogout()
+        binding.layoutProfile.btnSaveProfile.setOnClickListener {
+            doEditProfile()
         }
-        binding.layoutProfile.btnResetPassword.setOnClickListener {
+        binding.layoutProfile.btnLogout.setOnClickListener {
+            showLogoutConfirmationDialog()
+        }
+        binding.layoutProfile.btnChangePassword.setOnClickListener {
             requestChangePassword()
         }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        val confirmationDialog = buildConfirmationDialog()
+        confirmationDialog.show()
+    }
+
+    private fun buildConfirmationDialog(): AlertDialog {
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+        dialogBuilder.setMessage("Apakah kamu ingin logout?")
+        dialogBuilder.setPositiveButton(
+            "Ya"
+        ) { dialog, id ->
+            performLogout()
+            navigateToMenu()
+        }
+        dialogBuilder.setNegativeButton(
+            "Tidak"
+        ) { dialog, id ->
+            // Do nothing, user cancels logout
+        }
+        return dialogBuilder.create()
+    }
+
+    private fun performLogout() {
+        viewModel.doLogout()
     }
 
     private fun navigateToMenu() {
         startActivity(Intent(requireContext(), MainActivity::class.java))
     }
 
-    private fun doLogout() {
-        val dialog = AlertDialog.Builder(requireContext()).setMessage("Do you want to logout ?")
-            .setPositiveButton(
-                "Yes"
-            ) { dialog, id ->
-                viewModel.doLogout()
-                navigateToMenu()
-            }
-            .setNegativeButton(
-                "No"
-            ) { dialog, id ->
-                //no-op , do nothing
-            }.create()
-        dialog.show()
-    }
 
 }

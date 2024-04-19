@@ -6,16 +6,19 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.raihan.foodstar.data.model.Cart
 import com.raihan.foodstar.data.repository.CartRepository
+import com.raihan.foodstar.data.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class CartViewModel(private val cartRepository: CartRepository) : ViewModel() {
+class CartViewModel(private val cartRepository: CartRepository, private val userRepository: UserRepository)
+    : ViewModel() {
 
+    fun isLoggedIn() =
+        userRepository
+            .isLoggedIn()
 
     fun getAllCarts() = cartRepository.getUserCartData().asLiveData(Dispatchers.IO)
-
-    val cartList = cartRepository.getUserCartData().asLiveData(Dispatchers.IO)
 
     fun increaseCart(item: Cart){
         viewModelScope.launch(Dispatchers.IO) {

@@ -33,8 +33,6 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels {
         val service = FoodStarApiService.invoke()
         val userPreference = UserPreferenceImpl(requireContext())
-        /*val userDataSource: UserDataSource = UserDataSourceImpl(userPreference)
-        val userRepository: UserRepository = UserRepositoryImpl(userDataSource)*/
         val menuDataSource = MenuApiDataSource(service)
         val menuRepository: MenuRepository = MenuRepositoryImpl(menuDataSource)
         val categoryDataSource = CategoryApiDataSource(service)

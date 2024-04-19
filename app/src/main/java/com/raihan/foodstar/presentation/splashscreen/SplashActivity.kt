@@ -12,7 +12,6 @@ import com.raihan.foodstar.data.repository.UserRepositoryImpl
 import com.raihan.foodstar.data.source.firebase.FirebaseService
 import com.raihan.foodstar.data.source.firebase.FirebaseServiceImpl
 import com.raihan.foodstar.databinding.ActivitySplashBinding
-import com.raihan.foodstar.presentation.login.LoginActivity
 import com.raihan.foodstar.presentation.main.MainActivity
 import com.raihan.foodstar.utils.GenericViewModelFactory
 import kotlinx.coroutines.delay
@@ -44,16 +43,9 @@ class SplashActivity : AppCompatActivity() {
             if (viewModel.isUserLoggedIn()) {
                 navigateToMain()
             } else {
-                navigateToLogin()
+                navigateToMain()
             }
         }
-    }
-
-    private fun navigateToLogin() {
-        startActivity(Intent(this, LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        })
-
     }
 
     private fun navigateToMain() {
