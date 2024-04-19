@@ -9,9 +9,14 @@ import androidx.core.view.isVisible
 import com.raihan.foodstar.R
 import com.raihan.foodstar.data.datasource.cart.CartDataSource
 import com.raihan.foodstar.data.datasource.cart.CartDatabaseDataSource
+import com.raihan.foodstar.data.datasource.menu.MenuApiDataSource
+import com.raihan.foodstar.data.datasource.menu.MenuDataSource
 import com.raihan.foodstar.data.repository.CartRepository
 import com.raihan.foodstar.data.repository.CartRepositoryImpl
+import com.raihan.foodstar.data.repository.MenuRepository
+import com.raihan.foodstar.data.repository.MenuRepositoryImpl
 import com.raihan.foodstar.data.source.local.database.AppDatabase
+import com.raihan.foodstar.data.source.network.services.FoodStarApiService
 import com.raihan.foodstar.databinding.ActivityCheckoutBinding
 import com.raihan.foodstar.presentation.checkout.adapter.PriceListAdapter
 import com.raihan.foodstar.presentation.common.adapter.CartListAdapter
@@ -28,8 +33,11 @@ class CheckoutActivity : AppCompatActivity() {
     private val viewModel: CheckoutViewModel by viewModels {
         val db = AppDatabase.getInstance(this)
         val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
+        val s = FoodStarApiService.invoke()
+        val pds: MenuDataSource = MenuApiDataSource(s)
+        val pr: MenuRepository = MenuRepositoryImpl(pds)
         val rp: CartRepository = CartRepositoryImpl(ds)
-        GenericViewModelFactory.create(CheckoutViewModel(rp))
+        GenericViewModelFactory.create(CheckoutViewModel(rp,pr))
     }
 
     private val adapter: CartListAdapter by lazy {
@@ -47,11 +55,11 @@ class CheckoutActivity : AppCompatActivity() {
         setupList()
         observeData()
         setClickListeners()
-        observeCheckoutResult()
+
     }
 
     private fun observeCheckoutResult() {
-        viewModel.checkoutResult.observe(this) {
+        viewModel.checkoutCart().observe(this) {
             it.proceedWhen(
                 doOnSuccess = {
                     binding.layoutState.root.isVisible = false
@@ -80,7 +88,8 @@ class CheckoutActivity : AppCompatActivity() {
             onBackPressed()
         }
         binding.btnCheckout.setOnClickListener {
-            viewModel.checkout()
+            viewModel.checkoutCart()
+            observeCheckoutResult()
         }
     }
 

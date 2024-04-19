@@ -7,6 +7,7 @@ import com.raihan.foodstar.utils.SharedPreferenceUtils.set
 interface UserPreference {
     fun isUsingGridMode(): Boolean
     fun setUsingGridMode(isUsingGridMode: Boolean)
+
 }
 
 class UserPreferenceImpl(private val context : Context) : UserPreference {
