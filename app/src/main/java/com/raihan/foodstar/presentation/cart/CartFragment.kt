@@ -9,16 +9,23 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.raihan.foodstar.R
+import com.raihan.foodstar.data.datasource.auth.AuthDataSource
+import com.raihan.foodstar.data.datasource.auth.FirebaseAuthDataSource
 import com.raihan.foodstar.data.datasource.cart.CartDataSource
 import com.raihan.foodstar.data.datasource.cart.CartDatabaseDataSource
 import com.raihan.foodstar.data.model.Cart
 import com.raihan.foodstar.data.repository.CartRepository
 import com.raihan.foodstar.data.repository.CartRepositoryImpl
+import com.raihan.foodstar.data.repository.UserRepository
+import com.raihan.foodstar.data.repository.UserRepositoryImpl
+import com.raihan.foodstar.data.source.firebase.FirebaseService
+import com.raihan.foodstar.data.source.firebase.FirebaseServiceImpl
 import com.raihan.foodstar.data.source.local.database.AppDatabase
 import com.raihan.foodstar.databinding.FragmentCartBinding
 import com.raihan.foodstar.presentation.checkout.CheckoutActivity
 import com.raihan.foodstar.presentation.common.adapter.CartListAdapter
 import com.raihan.foodstar.presentation.common.adapter.CartListener
+import com.raihan.foodstar.presentation.login.LoginActivity
 import com.raihan.foodstar.utils.GenericViewModelFactory
 import com.raihan.foodstar.utils.hideKeyboard
 import com.raihan.foodstar.utils.proceedWhen
@@ -32,10 +39,13 @@ class CartFragment : Fragment() {
     private var isCheckoutButtonEnabled: Boolean = false
 
     private val viewModel: CartViewModel by viewModels {
+        val s: FirebaseService = FirebaseServiceImpl()
+        val ads: AuthDataSource = FirebaseAuthDataSource(s)
+        val ur: UserRepository = UserRepositoryImpl(ads)
         val db = AppDatabase.getInstance(requireContext())
         val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
         val rp: CartRepository = CartRepositoryImpl(ds)
-        GenericViewModelFactory.create(CartViewModel(rp))
+        GenericViewModelFactory.create(CartViewModel(rp, ur))
     }
 
     private val adapter: CartListAdapter by lazy {
@@ -63,8 +73,6 @@ class CartFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-
         binding = FragmentCartBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -78,9 +86,17 @@ class CartFragment : Fragment() {
 
     private fun setClickListeners() {
         binding.btnCheckoutMenu.setOnClickListener {
-            startActivity(Intent(requireContext(), CheckoutActivity::class.java))
+            if(!viewModel.isLoggedIn()) navigateToLogin()
+            else startActivity(Intent(requireContext(), CheckoutActivity::class.java))
 
         }
+    }
+
+    private fun navigateToLogin() {
+        startActivity(Intent(requireContext(), LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        )
     }
 
     private fun updateCheckoutButtonState() {

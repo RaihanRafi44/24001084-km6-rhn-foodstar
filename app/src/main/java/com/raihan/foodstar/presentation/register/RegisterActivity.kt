@@ -154,10 +154,10 @@ class RegisterActivity : AppCompatActivity() {
             textInputLayout.error =
                 getString(R.string.text_error_password_empty)
             false
-        } else if (confirmPassword.length < 8) {
+        } else if (confirmPassword.length < 4) {
             textInputLayout.isErrorEnabled = true
             textInputLayout.error =
-                getString(R.string.text_error_password_less_than_8_char)
+                getString(R.string.text_error_password_less_than_4_char)
             false
         } else {
             textInputLayout.isErrorEnabled = false

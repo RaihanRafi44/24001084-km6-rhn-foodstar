@@ -3,20 +3,12 @@ package com.raihan.foodstar.presentation.profile
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.raihan.foodstar.data.model.Profile
 import com.raihan.foodstar.data.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 
 class ProfileViewModel(
     private val userRepository: UserRepository
 ): ViewModel() {
-    val profileData = MutableLiveData(
-        Profile(
-            username = "Raihan Rafi Rizqullah",
-            email = "raihanrrizqullah@gmail.com",
-            profileImgUrl = "https://raw.githubusercontent.com/RaihanRafi44/foodstar-assets/main/profile/img_profile.jpg",
-        )
-    )
 
     val isEditMode = MutableLiveData(false)
 
@@ -30,14 +22,9 @@ class ProfileViewModel(
             .updateProfile(fullName = fullName)
             .asLiveData(Dispatchers.IO)
 
-    fun updateProfileEmail(email : String) =
-        userRepository
-            .updateEmail(newEmail = email)
-            .asLiveData(Dispatchers.IO)
 
     fun getCurrentUser() =
-        userRepository
-            .getCurrentUser()
+        userRepository.getCurrentUser()
 
     fun createChangePwdRequest() {
         userRepository.requestChangePasswordByEmail()
