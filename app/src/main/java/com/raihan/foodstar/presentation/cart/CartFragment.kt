@@ -7,77 +7,61 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.raihan.foodstar.R
-import com.raihan.foodstar.data.datasource.auth.AuthDataSource
-import com.raihan.foodstar.data.datasource.auth.FirebaseAuthDataSource
-import com.raihan.foodstar.data.datasource.cart.CartDataSource
-import com.raihan.foodstar.data.datasource.cart.CartDatabaseDataSource
 import com.raihan.foodstar.data.model.Cart
-import com.raihan.foodstar.data.repository.CartRepository
-import com.raihan.foodstar.data.repository.CartRepositoryImpl
-import com.raihan.foodstar.data.repository.UserRepository
-import com.raihan.foodstar.data.repository.UserRepositoryImpl
-import com.raihan.foodstar.data.source.firebase.FirebaseService
-import com.raihan.foodstar.data.source.firebase.FirebaseServiceImpl
-import com.raihan.foodstar.data.source.local.database.AppDatabase
 import com.raihan.foodstar.databinding.FragmentCartBinding
 import com.raihan.foodstar.presentation.checkout.CheckoutActivity
 import com.raihan.foodstar.presentation.common.adapter.CartListAdapter
 import com.raihan.foodstar.presentation.common.adapter.CartListener
 import com.raihan.foodstar.presentation.login.LoginActivity
-import com.raihan.foodstar.utils.GenericViewModelFactory
 import com.raihan.foodstar.utils.hideKeyboard
 import com.raihan.foodstar.utils.proceedWhen
 import com.raihan.foodstar.utils.toIndonesianFormat
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CartFragment : Fragment() {
-
     private lateinit var binding: FragmentCartBinding
 
     private var isCheckoutButtonEnabled: Boolean = false
 
-    private val viewModel: CartViewModel by viewModels {
-        val s: FirebaseService = FirebaseServiceImpl()
-        val ads: AuthDataSource = FirebaseAuthDataSource(s)
-        val ur: UserRepository = UserRepositoryImpl(ads)
-        val db = AppDatabase.getInstance(requireContext())
-        val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
-        val rp: CartRepository = CartRepositoryImpl(ds)
-        GenericViewModelFactory.create(CartViewModel(rp, ur))
-    }
+    private val cartViewModel: CartViewModel by viewModel()
 
     private val adapter: CartListAdapter by lazy {
-        CartListAdapter(object : CartListener {
-            override fun onPlusTotalItemCartClicked(cart: Cart) {
-                viewModel.increaseCart(cart)
-            }
+        CartListAdapter(
+            object : CartListener {
+                override fun onPlusTotalItemCartClicked(cart: Cart) {
+                    cartViewModel.increaseCart(cart)
+                }
 
-            override fun onMinusTotalItemCartClicked(cart: Cart) {
-                viewModel.decreaseCart(cart)
-            }
+                override fun onMinusTotalItemCartClicked(cart: Cart) {
+                    cartViewModel.decreaseCart(cart)
+                }
 
-            override fun onRemoveCartClicked(cart: Cart) {
-                viewModel.removeCarts(cart)
-            }
+                override fun onRemoveCartClicked(cart: Cart) {
+                    cartViewModel.removeCarts(cart)
+                }
 
-            override fun onUserDoneEditingNotes(cart: Cart) {
-                viewModel.setCartNotes(cart)
-                hideKeyboard()
-            }
-        })
+                override fun onUserDoneEditingNotes(cart: Cart) {
+                    cartViewModel.setCartNotes(cart)
+                    hideKeyboard()
+                }
+            },
+        )
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentCartBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         setupList()
         observeData()
@@ -86,16 +70,19 @@ class CartFragment : Fragment() {
 
     private fun setClickListeners() {
         binding.btnCheckoutMenu.setOnClickListener {
-            if(!viewModel.isLoggedIn()) navigateToLogin()
-            else startActivity(Intent(requireContext(), CheckoutActivity::class.java))
-
+            if (!cartViewModel.isLoggedIn()) {
+                navigateToLogin()
+            } else {
+                startActivity(Intent(requireContext(), CheckoutActivity::class.java))
+            }
         }
     }
 
     private fun navigateToLogin() {
-        startActivity(Intent(requireContext(), LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
+        startActivity(
+            Intent(requireContext(), LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
         )
     }
 
@@ -103,9 +90,8 @@ class CartFragment : Fragment() {
         binding.btnCheckoutMenu.isEnabled = isCheckoutButtonEnabled
     }
 
-
     private fun observeData() {
-        viewModel.getAllCarts().observe(viewLifecycleOwner) { result ->
+        cartViewModel.getAllCarts().observe(viewLifecycleOwner) { result ->
             result.proceedWhen(
                 doOnLoading = {
                     binding.layoutState.root.isVisible = true
@@ -124,7 +110,7 @@ class CartFragment : Fragment() {
                     isCheckoutButtonEnabled = true
                     updateCheckoutButtonState()
                     result.payload?.let { (carts, totalPrice) ->
-                        //set list cart data
+                        // set list cart data
                         adapter.submitData(carts)
                         binding.tvTotalPriceValue.text = totalPrice.toIndonesianFormat()
                     }
@@ -151,7 +137,7 @@ class CartFragment : Fragment() {
                         binding.tvTotalPriceValue.text = totalPrice.toIndonesianFormat()
                     }
                     binding.btnCheckoutMenu.visibility = View.GONE
-                }
+                },
             )
         }
     }

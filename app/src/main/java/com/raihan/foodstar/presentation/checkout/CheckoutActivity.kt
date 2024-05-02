@@ -2,50 +2,28 @@ package com.raihan.foodstar.presentation.checkout
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.raihan.foodstar.R
-import com.raihan.foodstar.data.datasource.cart.CartDataSource
-import com.raihan.foodstar.data.datasource.cart.CartDatabaseDataSource
-import com.raihan.foodstar.data.datasource.menu.MenuApiDataSource
-import com.raihan.foodstar.data.datasource.menu.MenuDataSource
-import com.raihan.foodstar.data.repository.CartRepository
-import com.raihan.foodstar.data.repository.CartRepositoryImpl
-import com.raihan.foodstar.data.repository.MenuRepository
-import com.raihan.foodstar.data.repository.MenuRepositoryImpl
-import com.raihan.foodstar.data.source.local.database.AppDatabase
-import com.raihan.foodstar.data.source.network.services.FoodStarApiService
 import com.raihan.foodstar.databinding.ActivityCheckoutBinding
 import com.raihan.foodstar.presentation.checkout.adapter.PriceListAdapter
 import com.raihan.foodstar.presentation.common.adapter.CartListAdapter
-import com.raihan.foodstar.utils.GenericViewModelFactory
 import com.raihan.foodstar.utils.proceedWhen
 import com.raihan.foodstar.utils.toIndonesianFormat
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CheckoutActivity : AppCompatActivity() {
-
     private val binding: ActivityCheckoutBinding by lazy {
         ActivityCheckoutBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: CheckoutViewModel by viewModels {
-        val db = AppDatabase.getInstance(this)
-        val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
-        val s = FoodStarApiService.invoke()
-        val pds: MenuDataSource = MenuApiDataSource(s)
-        val pr: MenuRepository = MenuRepositoryImpl(pds)
-        val rp: CartRepository = CartRepositoryImpl(ds)
-        GenericViewModelFactory.create(CheckoutViewModel(rp,pr))
-    }
-
+    private val checkoutViewModel: CheckoutViewModel by viewModel()
     private val adapter: CartListAdapter by lazy {
         CartListAdapter()
     }
     private val priceItemAdapter: PriceListAdapter by lazy {
         PriceListAdapter {
-
         }
     }
 
@@ -55,11 +33,10 @@ class CheckoutActivity : AppCompatActivity() {
         setupList()
         observeData()
         setClickListeners()
-
     }
 
     private fun observeCheckoutResult() {
-        viewModel.checkoutCart().observe(this) {
+        checkoutViewModel.checkoutCart().observe(this) {
             it.proceedWhen(
                 doOnSuccess = {
                     binding.layoutState.root.isVisible = false
@@ -72,13 +49,13 @@ class CheckoutActivity : AppCompatActivity() {
                     Toast.makeText(
                         this,
                         getString(R.string.text_checkout_error),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                 },
                 doOnLoading = {
                     binding.layoutState.root.isVisible = true
-                    binding.layoutState.pbLoading.isVisible = true
-                }
+                    binding.layoutState.pbLoading.isVisible = false
+                },
             )
         }
     }
@@ -88,7 +65,7 @@ class CheckoutActivity : AppCompatActivity() {
             onBackPressed()
         }
         binding.btnCheckout.setOnClickListener {
-            viewModel.checkoutCart()
+            checkoutViewModel.checkoutCart()
             observeCheckoutResult()
         }
     }
@@ -99,7 +76,7 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun observeData() {
-        viewModel.checkoutData.observe(this) { result ->
+        checkoutViewModel.checkoutData.observe(this) { result ->
             result.proceedWhen(doOnSuccess = {
                 binding.layoutState.root.isVisible = false
                 binding.layoutState.pbLoading.isVisible = false
@@ -143,15 +120,16 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun showSuccessDialog() {
-        val dialog = AlertDialog.Builder(this)
-            .setTitle("Success")
-            .setMessage("Transaction successful!")
-            .setPositiveButton(android.R.string.ok) { dialog, which ->
-                dialog.dismiss()
-                viewModel.removeAllCart()
-                finish()
-            }
-            .create()
+        val dialog =
+            AlertDialog.Builder(this)
+                .setTitle("Success")
+                .setMessage("Transaction successful!")
+                .setPositiveButton(android.R.string.ok) { dialog, which ->
+                    dialog.dismiss()
+                    checkoutViewModel.removeAllCart()
+                    finish()
+                }
+                .create()
 
         dialog.show()
     }

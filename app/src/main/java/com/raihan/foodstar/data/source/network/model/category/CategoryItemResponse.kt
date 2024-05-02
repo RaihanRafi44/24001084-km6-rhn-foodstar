@@ -8,5 +8,5 @@ data class CategoryItemResponse(
     @SerializedName("image_url")
     val imageUrl: String?,
     @SerializedName("nama")
-    val nama: String?
+    val nama: String?,
 )

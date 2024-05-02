@@ -9,79 +9,77 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.raihan.foodstar.R
-import com.raihan.foodstar.data.datasource.auth.AuthDataSource
-import com.raihan.foodstar.data.datasource.auth.FirebaseAuthDataSource
-import com.raihan.foodstar.data.repository.UserRepository
-import com.raihan.foodstar.data.repository.UserRepositoryImpl
-import com.raihan.foodstar.data.source.firebase.FirebaseService
-import com.raihan.foodstar.data.source.firebase.FirebaseServiceImpl
 import com.raihan.foodstar.databinding.FragmentProfileBinding
 import com.raihan.foodstar.presentation.main.MainActivity
-import com.raihan.foodstar.utils.GenericViewModelFactory
 import com.raihan.foodstar.utils.proceedWhen
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProfileFragment : Fragment() {
-
     private lateinit var binding: FragmentProfileBinding
-    private val viewModel: ProfileViewModel by viewModels {
-        val s: FirebaseService = FirebaseServiceImpl()
-        val ds: AuthDataSource = FirebaseAuthDataSource(s)
-        val r: UserRepository = UserRepositoryImpl(ds)
-        GenericViewModelFactory.create(ProfileViewModel(r))
-    }
+    private val profileViewModel: ProfileViewModel by viewModel()
+    private var isSaveProfileButtonEnabled: Boolean = false
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(layoutInflater, container, false)
         return binding.root
-
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         showUserData()
         setClickListener()
         observeEditMode()
     }
 
-    private fun doEditProfile(){
-        if(checkNameValidation()){
+    private fun updateSaveButtonState() {
+        binding.layoutProfile.btnSaveProfile.isEnabled = isSaveProfileButtonEnabled
+    }
+
+    private fun doEditProfile() {
+        if (checkNameValidation()) {
             val fullName = binding.layoutProfile.etName.text.toString().trim()
             proceedEdit(fullName)
         }
     }
+
     private fun proceedEdit(fullName: String) {
-        viewModel.updateProfileName(fullName = fullName).observe(viewLifecycleOwner) {
+        profileViewModel.updateProfileName(fullName = fullName).observe(viewLifecycleOwner) {
             it.proceedWhen(
                 doOnSuccess = {
                     binding.layoutProfile.pbLoading.isVisible = false
-                    binding.layoutProfile.btnSaveProfile.isVisible = true
+                    binding.layoutProfile.btnSaveProfile.isVisible = true // Make button visible again
+                    isSaveProfileButtonEnabled = false // Disable saving again until a new edit happens
+                    updateSaveButtonState()
                     Toast.makeText(requireContext(), "Pengubahan data profil sukses", Toast.LENGTH_SHORT).show()
-                    binding.layoutProfile.btnSaveProfile.isEnabled = false
                 },
                 doOnError = {
                     binding.layoutProfile.pbLoading.isVisible = false
                     binding.layoutProfile.btnSaveProfile.isVisible = true
                     Toast.makeText(requireContext(), "Pengubahan data profil gagal", Toast.LENGTH_SHORT).show()
-
                 },
                 doOnLoading = {
                     binding.layoutProfile.pbLoading.isVisible = true
                     binding.layoutProfile.btnSaveProfile.isVisible = false
-                }
+                },
             )
         }
     }
 
-
     private fun requestChangePassword() {
-        viewModel.createChangePwdRequest()
-        val dialog = buildChangePasswordDialog("Reset password akan dikirimkan ke email ${viewModel.getCurrentUser()?.email}. Harap periksa inbox atau folder spam anda.")
+        profileViewModel.createChangePwdRequest()
+        val dialog =
+            buildChangePasswordDialog(
+                "Reset password akan dikirimkan ke email ${profileViewModel.getCurrentUser()?.email}. Harap periksa inbox atau folder spam anda.",
+            )
         dialog.show()
     }
 
@@ -89,19 +87,18 @@ class ProfileFragment : Fragment() {
         val dialogBuilder = AlertDialog.Builder(requireContext())
         dialogBuilder.setMessage(message)
         dialogBuilder.setPositiveButton(
-            "Oke"
+            "Oke",
         ) { dialog, id ->
             // Dismiss dialog on button click
         }
         return dialogBuilder.create()
     }
 
-
-
     private fun showUserData() {
-        viewModel.getCurrentUser()?.let {
+        profileViewModel.getCurrentUser()?.let {
             binding.layoutProfile.etName.setText(it.fullName)
             binding.layoutProfile.etEmail.setText(it.email)
+            updateSaveButtonState()
         }
     }
 
@@ -116,8 +113,9 @@ class ProfileFragment : Fragment() {
             true
         }
     }
+
     private fun observeEditMode() {
-        viewModel.isEditMode.observe(viewLifecycleOwner) {
+        profileViewModel.isEditMode.observe(viewLifecycleOwner) {
             binding.layoutProfile.etName.isEnabled = it
             binding.layoutProfile.etEmail.isEnabled = it
         }
@@ -125,7 +123,17 @@ class ProfileFragment : Fragment() {
 
     private fun setClickListener() {
         binding.layoutProfile.btnEditProfile.setOnClickListener {
-            viewModel.changeEditMode()
+            profileViewModel.changeEditMode()
+            isSaveProfileButtonEnabled = true // Reset save button state
+            updateSaveButtonState()
+            if (profileViewModel.isEditMode.value == true) {
+                // User clicked edit again, reset fullname to original value
+                profileViewModel.getCurrentUser()?.let {
+                    binding.layoutProfile.etName.setText(it.fullName)
+                    isSaveProfileButtonEnabled = false
+                    updateSaveButtonState()
+                }
+            }
         }
         binding.layoutProfile.btnSaveProfile.setOnClickListener {
             doEditProfile()
@@ -147,13 +155,13 @@ class ProfileFragment : Fragment() {
         val dialogBuilder = AlertDialog.Builder(requireContext())
         dialogBuilder.setMessage("Apakah kamu ingin logout?")
         dialogBuilder.setPositiveButton(
-            "Ya"
+            "Ya",
         ) { dialog, id ->
             performLogout()
             navigateToMenu()
         }
         dialogBuilder.setNegativeButton(
-            "Tidak"
+            "Tidak",
         ) { dialog, id ->
             // Do nothing, user cancels logout
         }
@@ -161,12 +169,10 @@ class ProfileFragment : Fragment() {
     }
 
     private fun performLogout() {
-        viewModel.doLogout()
+        profileViewModel.doLogout()
     }
 
     private fun navigateToMenu() {
         startActivity(Intent(requireContext(), MainActivity::class.java))
     }
-
-
 }

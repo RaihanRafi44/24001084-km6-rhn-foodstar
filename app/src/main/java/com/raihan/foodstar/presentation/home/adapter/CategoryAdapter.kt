@@ -6,42 +6,47 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.raihan.foodstar.databinding.ItemCategoryBinding
 import com.raihan.foodstar.data.model.Category
+import com.raihan.foodstar.databinding.ItemCategoryBinding
 
-class CategoryAdapter(private val itemClick: (Category) -> Unit):
+class CategoryAdapter(private val itemClick: (Category) -> Unit) :
     RecyclerView.Adapter<CategoryAdapter.ItemCategoryViewHolder>() {
-
     private val dataDiffer =
         AsyncListDiffer(
             this,
             object : DiffUtil.ItemCallback<Category>() {
                 override fun areItemsTheSame(
                     oldItem: Category,
-                    newItem: Category
+                    newItem: Category,
                 ): Boolean {
                     return oldItem.id == newItem.id
                 }
 
                 override fun areContentsTheSame(
                     oldItem: Category,
-                    newItem: Category
+                    newItem: Category,
                 ): Boolean {
                     return oldItem.hashCode() == newItem.hashCode()
                 }
-            }
+            },
         )
 
     fun submitData(data: List<Category>) {
         dataDiffer.submitList(data)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemCategoryViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ItemCategoryViewHolder {
         val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemCategoryViewHolder(binding, itemClick)
     }
 
-    override fun onBindViewHolder(holder: ItemCategoryViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ItemCategoryViewHolder,
+        position: Int,
+    ) {
         holder.bindView(dataDiffer.currentList[position])
     }
 
@@ -49,9 +54,8 @@ class CategoryAdapter(private val itemClick: (Category) -> Unit):
 
     class ItemCategoryViewHolder(
         private val binding: ItemCategoryBinding,
-        val itemClick: (Category) -> Unit
+        val itemClick: (Category) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bindView(item: Category) {
             with(item) {
                 binding.ivCategoryImages.load(item.imgUrl) {

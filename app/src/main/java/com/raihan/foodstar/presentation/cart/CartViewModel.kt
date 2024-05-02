@@ -11,37 +11,40 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class CartViewModel(private val cartRepository: CartRepository, private val userRepository: UserRepository)
-    : ViewModel() {
-
+class CartViewModel(
+    private val cartRepository: CartRepository,
+    private val userRepository: UserRepository,
+) :
+    ViewModel() {
     fun isLoggedIn() =
         userRepository
             .isLoggedIn()
 
     fun getAllCarts() = cartRepository.getUserCartData().asLiveData(Dispatchers.IO)
 
-    fun increaseCart(item: Cart){
+    fun increaseCart(item: Cart) {
         viewModelScope.launch(Dispatchers.IO) {
             cartRepository.increaseCart(item).collect()
         }
     }
-    fun decreaseCart(item: Cart){
+
+    fun decreaseCart(item: Cart) {
         viewModelScope.launch(Dispatchers.IO) {
             cartRepository.decreaseCart(item).collect()
         }
     }
 
-    fun removeCarts(item: Cart){
+    fun removeCarts(item: Cart) {
         viewModelScope.launch(Dispatchers.IO) {
             cartRepository.deleteCart(item).collect()
         }
     }
-    fun setCartNotes(item: Cart){
+
+    fun setCartNotes(item: Cart) {
         viewModelScope.launch(Dispatchers.IO) {
-            cartRepository.setCartNotes(item).collect{
+            cartRepository.setCartNotes(item).collect {
                 Log.d("Set Notes", "setCartNotes: $it")
             }
         }
     }
-
 }

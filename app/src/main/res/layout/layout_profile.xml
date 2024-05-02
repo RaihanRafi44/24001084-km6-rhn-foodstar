@@ -103,7 +103,7 @@
                 android:layout_height="44dp"
                 android:gravity="center"
                 android:layout_marginStart="24dp"
-                android:text="Simpan"
+                android:text="@string/text_save_title"
                 app:iconGravity="start"
                 app:iconTint="@android:color/black" />
 
@@ -131,7 +131,7 @@
                 android:layout_height="44dp"
                 android:gravity="center"
                 android:layout_marginStart="32dp"
-                android:text="Ganti Password"
+                android:text="@string/text_change_pass"
                 app:iconGravity="start"
                 />
 
@@ -142,7 +142,7 @@
                 android:layout_height="44dp"
                 android:gravity="center"
                 android:layout_marginStart="70dp"
-                android:text="Logout"
+                android:text="@string/text_logout"
                 app:iconGravity="end"
                 android:backgroundTint="@color/md_theme_light_error"/>
         </LinearLayout>
