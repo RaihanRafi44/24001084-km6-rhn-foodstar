@@ -6,9 +6,9 @@
     <string name="title_tab_profile">Profile</string>
     <string name="text_add_item">Tambah</string>
     <string name="text_discount_40">Diskon 40% OFF</string>
-    <string name="text_discount_40_promo">Promo diskon hanya berlaku tanggal 10 - 24 April 2024</string>
+    <string name="text_discount_40_promo">Promo diskon hanya berlaku tanggal 10 – 24 April 2024</string>
     <string name="text_user_name">Hai Raihan</string>
-    <string name="text_welcome_app">Selamat Datang di Cuisine Star</string>
+    <string name="text_welcome_app">Selamat Datang di Food Star</string>
     <string name="text_category_title">Kategori</string>
     <string name="text_catalog_title">List Menu</string>
     <string name="rupiah">%s Rupiah</string>
@@ -73,4 +73,9 @@
     <string name="text_change_profile">Change Profile</string>
     <string name="text_change_password">Change Password</string>
     <string name="text_logout">Logout</string>
+    <string name="text_save_title">Simpan</string>
+    <string name="text_change_pass">Ganti Password</string>
+    <string name="text_hello">Hallo</string>
+    <string name="text_username_login">Hi %1$s</string>
+
 </resources>

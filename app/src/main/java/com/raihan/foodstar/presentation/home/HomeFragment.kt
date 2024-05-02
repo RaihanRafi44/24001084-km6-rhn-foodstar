@@ -5,65 +5,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.raihan.foodstar.R
-import com.raihan.foodstar.data.datasource.category.CategoryApiDataSource
-import com.raihan.foodstar.data.datasource.menu.MenuApiDataSource
 import com.raihan.foodstar.data.model.Category
 import com.raihan.foodstar.data.model.Menu
-import com.raihan.foodstar.data.repository.CategoryRepository
-import com.raihan.foodstar.data.repository.CategoryRepositoryImpl
-import com.raihan.foodstar.data.repository.MenuRepository
-import com.raihan.foodstar.data.repository.MenuRepositoryImpl
-import com.raihan.foodstar.data.source.local.pref.UserPreferenceImpl
-import com.raihan.foodstar.data.source.network.services.FoodStarApiService
 import com.raihan.foodstar.databinding.FragmentHomeBinding
 import com.raihan.foodstar.presentation.detailmenu.DetailMenuActivity
 import com.raihan.foodstar.presentation.home.adapter.CategoryAdapter
 import com.raihan.foodstar.presentation.home.adapter.MenuAdapter
-import com.raihan.foodstar.utils.GenericViewModelFactory
 import com.raihan.foodstar.utils.proceedWhen
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
-
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel: HomeViewModel by viewModels {
-        val service = FoodStarApiService.invoke()
-        val userPreference = UserPreferenceImpl(requireContext())
-        val menuDataSource = MenuApiDataSource(service)
-        val menuRepository: MenuRepository = MenuRepositoryImpl(menuDataSource)
-        val categoryDataSource = CategoryApiDataSource(service)
-        val categoryRepository: CategoryRepository = CategoryRepositoryImpl(categoryDataSource)
-        GenericViewModelFactory.create(
-            HomeViewModel(
-                categoryRepository,
-                menuRepository,
-                userPreference))
-    }
+    private val homeViewModel: HomeViewModel by viewModel()
     private val categoryAdapter: CategoryAdapter by lazy {
         CategoryAdapter {
-            getMenuData(it.name)
+            proceedMenu(it.name)
         }
     }
 
     private val menuAdapter: MenuAdapter by lazy {
-        MenuAdapter(viewModel.getListMode()) {
+        MenuAdapter(homeViewModel.getListMode()) {
             navigateToDetail(it)
         }
     }
 
-    private fun getMenuData(name: String) {
-        viewModel.getMenu(name).observe(viewLifecycleOwner) {
-            it.proceedWhen(
-                doOnSuccess = {
-                    it.payload?.let { data ->
-                        bindMenuList(data)
-                    }
-                }
-            )
+    private fun showUserData() {
+        homeViewModel.getCurrentUser()?.let { user ->
+            binding.layoutHead.textName.text =
+                getString(R.string.text_username_login, user.fullName)
         }
     }
 
@@ -73,19 +47,40 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun getCategoryData() {
-        viewModel.getCategory().observe(viewLifecycleOwner) {
+    private fun proceedCategory() {
+        homeViewModel.getCategory().observe(viewLifecycleOwner) {
+            it.proceedWhen(
+                doOnSuccess = {
+                    binding.pbLoading.isVisible = false
+                    binding.rvCategory.isVisible = true
+                    it.payload?.let { data -> bindCategory(data) }
+                },
+                doOnError = {
+                    binding.pbLoading.isVisible = false
+                    binding.rvCategory.isVisible = true
+                },
+                doOnLoading = {
+                    binding.pbLoading.isVisible = true
+                    binding.rvCategory.isVisible = false
+                },
+            )
+        }
+    }
+
+    /*private fun getCategoryData() {
+        homeViewModel.getCategory().observe(viewLifecycleOwner) {
             it.proceedWhen(
                 doOnSuccess = {
                     it.payload?.let { data -> bindCategory(data) }
                 }
             )
         }
-    }
+    }*/
 
     private fun bindCategory(data: List<Category>) {
         categoryAdapter.submitData(data)
     }
+
     private fun setupCategory() {
         binding.rvCategory.apply {
             adapter = categoryAdapter
@@ -93,7 +88,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeGridMode() {
-        viewModel.isUsingGridMode.observe(viewLifecycleOwner) { isUsingGridMode ->
+        homeViewModel.isUsingGridMode.observe(viewLifecycleOwner) { isUsingGridMode ->
             changeBtnIcon(isUsingGridMode)
             changeLayout(isUsingGridMode)
         }
@@ -110,42 +105,61 @@ class HomeFragment : Fragment() {
 
     private fun setClickAction() {
         binding.btnChangeListMode.setOnClickListener {
-            viewModel.changeListMode()
+            homeViewModel.changeListMode()
         }
     }
-
 
     private fun changeBtnIcon(isUsingGridMode: Boolean) {
         binding.btnChangeListMode.setIconResource(if (isUsingGridMode) R.drawable.ic_grid_black else R.drawable.ic_list_black)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
+        showUserData()
         setupCategory()
         setupMenu()
         observeGridMode()
-        getCategoryData()
-        getMenuData(null.toString())
+        proceedCategory()
+        proceedMenu(null)
         setClickAction()
     }
 
-    private fun bindCategoryList(data: List<Category>) {
-        binding.rvCategory.apply {
-            adapter = this@HomeFragment.categoryAdapter
+    private fun proceedMenu(name: String? = null) {
+        homeViewModel.getMenu(name).observe(viewLifecycleOwner) {
+            it.proceedWhen(
+                doOnSuccess = {
+                    binding.pbLoadingCatalog.isVisible = false
+                    binding.rvCatalog.isVisible = true
+                    it.payload?.let { data ->
+                        bindMenuList(data)
+                    }
+                },
+                doOnError = {
+                    binding.pbLoadingCatalog.isVisible = false
+                    binding.rvCatalog.isVisible = true
+                },
+                doOnLoading = {
+                    binding.pbLoadingCatalog.isVisible = true
+                    binding.rvCatalog.isVisible = false
+                },
+            )
         }
-        categoryAdapter.submitData(data)
     }
 
-    private fun bindMenuList(data : List<Menu>) {
+    private fun bindMenuList(data: List<Menu>) {
         menuAdapter.submitData(data)
     }
 

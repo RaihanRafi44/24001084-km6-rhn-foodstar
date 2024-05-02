@@ -96,7 +96,6 @@
                     android:id="@+id/rg_payment_method"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="@drawable/rounded_all_corners"
                     android:checkedButton="@+id/rb_e_wallet"
                     android:orientation="horizontal">
 

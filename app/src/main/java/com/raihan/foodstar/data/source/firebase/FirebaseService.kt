@@ -8,12 +8,18 @@ import com.google.firebase.auth.userProfileChangeRequest
 import kotlinx.coroutines.tasks.await
 
 interface FirebaseService {
+    @Throws(exceptionClasses = [Exception::class])
+    suspend fun doLogin(
+        email: String,
+        password: String,
+    ): Boolean
 
     @Throws(exceptionClasses = [Exception::class])
-    suspend fun doLogin(email: String, password: String): Boolean
-
-    @Throws(exceptionClasses = [Exception::class])
-    suspend fun doRegister(email: String, fullName: String, password: String): Boolean
+    suspend fun doRegister(
+        email: String,
+        fullName: String,
+        password: String,
+    ): Boolean
 
     suspend fun updateProfile(fullName: String? = null): Boolean
 
@@ -30,23 +36,27 @@ interface FirebaseService {
     fun getCurrentUser(): FirebaseUser?
 }
 
-class FirebaseServiceImpl() : FirebaseService {
-
-    private val firebaseAuth = FirebaseAuth.getInstance()
-
-    override suspend fun doLogin(email: String, password: String): Boolean {
+class FirebaseServiceImpl(private val firebaseAuth: FirebaseAuth) : FirebaseService {
+    override suspend fun doLogin(
+        email: String,
+        password: String,
+    ): Boolean {
         val loginResult = firebaseAuth.signInWithEmailAndPassword(email, password).await()
-        return  loginResult.user != null
+        return loginResult.user != null
     }
 
-    override suspend fun doRegister(email: String, fullName: String, password: String): Boolean {
+    override suspend fun doRegister(
+        email: String,
+        fullName: String,
+        password: String,
+    ): Boolean {
         val registerResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
         registerResult.user?.updateProfile(
             userProfileChangeRequest {
                 displayName = fullName
-            }
+            },
         )?.await()
-        return  registerResult.user != null
+        return registerResult.user != null
     }
 
     override suspend fun updateProfile(fullName: String?): Boolean {
@@ -55,10 +65,11 @@ class FirebaseServiceImpl() : FirebaseService {
                 fullName?.let {
                     displayName = fullName
                 }
-            }
+            },
         )?.await()
         return true
     }
+
     override suspend fun updatePassword(newPassword: String): Boolean {
         getCurrentUser()?.updatePassword(newPassword)?.await()
         return true

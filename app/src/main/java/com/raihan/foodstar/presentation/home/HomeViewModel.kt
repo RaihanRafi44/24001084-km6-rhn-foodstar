@@ -6,14 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.raihan.foodstar.data.repository.CategoryRepository
 import com.raihan.foodstar.data.repository.MenuRepository
-import com.raihan.foodstar.data.source.local.pref.UserPreference
+import com.raihan.foodstar.data.repository.UserPreferenceRepository
+import com.raihan.foodstar.data.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
-
 
 class HomeViewModel(
     private val categoryRepository: CategoryRepository,
     private val menuRepository: MenuRepository,
-    private val userPreference: UserPreference,
+    private val userPreference: UserPreferenceRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _isUsingGridMode = MutableLiveData(userPreference.isUsingGridMode())
     val isUsingGridMode: LiveData<Boolean>
@@ -29,8 +30,9 @@ class HomeViewModel(
         userPreference.setUsingGridMode(!currentValue)
     }
 
-    fun getMenu(categoryName: String? = null) =
-        menuRepository.getMenus(categoryName).asLiveData(Dispatchers.IO)
-    fun getCategory() = categoryRepository.getCategories().asLiveData(Dispatchers.IO)
-}
+    fun getMenu(categoryName: String? = null) = menuRepository.getMenus(categoryName).asLiveData(Dispatchers.IO)
 
+    fun getCategory() = categoryRepository.getCategories().asLiveData(Dispatchers.IO)
+
+    fun getCurrentUser() = userRepository.getCurrentUser()
+}

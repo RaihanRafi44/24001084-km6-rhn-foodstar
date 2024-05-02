@@ -5,7 +5,7 @@ import com.raihan.foodstar.data.source.network.model.checkout.CheckoutResponse
 import com.raihan.foodstar.data.source.network.model.menu.MenusResponse
 import com.raihan.foodstar.data.source.network.services.FoodStarApiService
 
-class MenuApiDataSource (private val service : FoodStarApiService): MenuDataSource {
+class MenuApiDataSource(private val service: FoodStarApiService) : MenuDataSource {
     override suspend fun getMenuData(categorySlug: String?): MenusResponse {
         return service.getMenus(categorySlug)
     }
@@ -13,5 +13,4 @@ class MenuApiDataSource (private val service : FoodStarApiService): MenuDataSour
     override suspend fun createOrder(payload: CheckoutRequestPayload): CheckoutResponse {
         return service.createOrder(payload)
     }
-
 }
