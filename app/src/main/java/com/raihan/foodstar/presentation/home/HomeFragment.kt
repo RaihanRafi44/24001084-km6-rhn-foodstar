@@ -67,16 +67,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    /*private fun getCategoryData() {
-        homeViewModel.getCategory().observe(viewLifecycleOwner) {
-            it.proceedWhen(
-                doOnSuccess = {
-                    it.payload?.let { data -> bindCategory(data) }
-                }
-            )
-        }
-    }*/
-
     private fun bindCategory(data: List<Category>) {
         categoryAdapter.submitData(data)
     }
