@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setupBottomNav()
-        // throw IllegalAccessException("Test Crash")
     }
 
     private fun setupBottomNav() {
