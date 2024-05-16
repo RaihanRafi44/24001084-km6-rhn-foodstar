@@ -41,6 +41,7 @@ class CheckoutActivity : AppCompatActivity() {
                 doOnSuccess = {
                     binding.layoutState.root.isVisible = false
                     binding.layoutState.pbLoading.isVisible = false
+                    checkoutViewModel.removeAllCart()
                     showSuccessDialog()
                 },
                 doOnError = {
@@ -126,7 +127,6 @@ class CheckoutActivity : AppCompatActivity() {
                 .setMessage("Transaction successful!")
                 .setPositiveButton(android.R.string.ok) { dialog, which ->
                     dialog.dismiss()
-                    checkoutViewModel.removeAllCart()
                     finish()
                 }
                 .create()

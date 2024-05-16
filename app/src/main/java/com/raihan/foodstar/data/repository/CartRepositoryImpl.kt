@@ -12,6 +12,7 @@ import com.raihan.foodstar.utils.proceed
 import com.raihan.foodstar.utils.proceedFlow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -30,6 +31,8 @@ class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepos
                 // map to check when list is empty
                 if (it.payload?.first?.isEmpty() == false) return@map it
                 ResultWrapper.Empty(it.payload)
+            }.catch {
+                emit(ResultWrapper.Error(Exception(it)))
             }.onStart {
                 emit(ResultWrapper.Loading())
                 delay(2000)
@@ -50,6 +53,8 @@ class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepos
                 // map to check when list is empty
                 if (it.payload?.first?.isEmpty() == false) return@map it
                 ResultWrapper.Empty(it.payload)
+            }.catch {
+                emit(ResultWrapper.Error(Exception(it)))
             }.onStart {
                 emit(ResultWrapper.Loading())
                 delay(2000)
@@ -110,13 +115,6 @@ class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepos
 
     override fun deleteCart(item: Cart): Flow<ResultWrapper<Boolean>> {
         return proceedFlow { cartDataSource.deleteCart(item.toCartEntity()) > 0 }
-    }
-
-    override suspend fun checkout(items: List<Cart>): Flow<ResultWrapper<Boolean>> {
-        return flow {
-            delay(1000)
-            emit(ResultWrapper.Success(true))
-        }
     }
 
     override suspend fun deleteAll() {

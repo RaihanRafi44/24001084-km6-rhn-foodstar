@@ -12,8 +12,6 @@ import com.raihan.foodstar.data.datasource.menu.MenuApiDataSource
 import com.raihan.foodstar.data.datasource.menu.MenuDataSource
 import com.raihan.foodstar.data.datasource.pref.UserPreference
 import com.raihan.foodstar.data.datasource.pref.UserPreferenceImpl
-import com.raihan.foodstar.data.datasource.user.UserDataSource
-import com.raihan.foodstar.data.datasource.user.UserDataSourceImpl
 import com.raihan.foodstar.data.repository.CartRepository
 import com.raihan.foodstar.data.repository.CartRepositoryImpl
 import com.raihan.foodstar.data.repository.CategoryRepository
@@ -75,7 +73,7 @@ object AppModules {
             single<CartDataSource> { CartDatabaseDataSource(get()) }
             single<CategoryDataSource> { CategoryApiDataSource(get()) }
             single<MenuDataSource> { MenuApiDataSource(get()) }
-            single<UserDataSource> { UserDataSourceImpl() }
+            // single<UserDataSource> { UserDataSourceImpl() }
             single<AuthDataSource> { FirebaseAuthDataSource(get()) }
         }
 

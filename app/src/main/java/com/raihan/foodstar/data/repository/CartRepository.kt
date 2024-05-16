@@ -25,7 +25,7 @@ interface CartRepository {
 
     fun deleteCart(item: Cart): Flow<ResultWrapper<Boolean>>
 
-    suspend fun checkout(items: List<Cart>): Flow<ResultWrapper<Boolean>>
+    // suspend fun checkout(items: List<Cart>): Flow<ResultWrapper<Boolean>>
 
     suspend fun deleteAll()
 }
